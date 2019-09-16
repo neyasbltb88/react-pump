@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "react-pump/static/css/main.adaf87c9.chunk.css",
-    "main.js": "react-pump/static/js/main.b1402e24.chunk.js",
-    "main.js.map": "react-pump/static/js/main.b1402e24.chunk.js.map",
-    "runtime~main.js": "react-pump/static/js/runtime~main.105b83c6.js",
-    "runtime~main.js.map": "react-pump/static/js/runtime~main.105b83c6.js.map",
-    "static/js/2.0404023f.chunk.js": "react-pump/static/js/2.0404023f.chunk.js",
-    "static/js/2.0404023f.chunk.js.map": "react-pump/static/js/2.0404023f.chunk.js.map",
-    "index.html": "react-pump/index.html",
-    "precache-manifest.83862b4b8813f3e48e4ccda6f22161de.js": "react-pump/precache-manifest.83862b4b8813f3e48e4ccda6f22161de.js",
-    "service-worker.js": "react-pump/service-worker.js",
-    "static/css/main.adaf87c9.chunk.css.map": "react-pump/static/css/main.adaf87c9.chunk.css.map"
+    "main.css": "/react-pump/static/css/main.adaf87c9.chunk.css",
+    "main.js": "/react-pump/static/js/main.5bd583cf.chunk.js",
+    "main.js.map": "/react-pump/static/js/main.5bd583cf.chunk.js.map",
+    "runtime~main.js": "/react-pump/static/js/runtime~main.197615e8.js",
+    "runtime~main.js.map": "/react-pump/static/js/runtime~main.197615e8.js.map",
+    "static/js/2.0404023f.chunk.js": "/react-pump/static/js/2.0404023f.chunk.js",
+    "static/js/2.0404023f.chunk.js.map": "/react-pump/static/js/2.0404023f.chunk.js.map",
+    "index.html": "/react-pump/index.html",
+    "precache-manifest.ef0e7cade0aae427109c745b7269877e.js": "/react-pump/precache-manifest.ef0e7cade0aae427109c745b7269877e.js",
+    "service-worker.js": "/react-pump/service-worker.js",
+    "static/css/main.adaf87c9.chunk.css.map": "/react-pump/static/css/main.adaf87c9.chunk.css.map"
   }
 }
