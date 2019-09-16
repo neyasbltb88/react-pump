@@ -33,8 +33,10 @@ export default class Main extends Component {
     }
 
     onClick = () => {
-        let pumping = window.open('/pumping', randomName(), 'resizable');
-        // pumping.onbeforeunload = () => this.onPumpingClose();
+        const { REACT_APP_DEPLOY_FOLDER } = process.env;
+        const DEPLOY_FOLDER = REACT_APP_DEPLOY_FOLDER ? '/' + REACT_APP_DEPLOY_FOLDER : '';
+
+        let pumping = window.open(`${DEPLOY_FOLDER}/pumping`, randomName(), 'resizable');
 
         pumping.addEventListener('beforeunload', this.onPumpingClose);
 

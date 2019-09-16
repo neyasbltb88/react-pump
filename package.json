@@ -2,7 +2,7 @@
   "name": "react-pump",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://neyasbltb88.github.io/react-pump",
+  "homepage": "https://neyasbltb88.github.io/react-pump/",
   "dependencies": {
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
@@ -11,9 +11,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "cross-env REACT_APP_DEPLOY_FOLDER=react-pump react-scripts build && npm run deploy:site",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
+    "deploy:site": "node deploy",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -32,6 +33,7 @@
     ]
   },
   "devDependencies": {
+    "ftp-deploy": "^2.3.3",
     "gh-pages": "^2.1.1"
   }
 }

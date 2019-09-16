@@ -8,14 +8,16 @@ import Pumped from '../../pages/pumped';
 import './app.css';
 
 const App = () => {
+    const { REACT_APP_DEPLOY_FOLDER } = process.env;
+    
     return (
         <div className="App" >
-            <Router>
-                <Route path="/" component={ Main } exact/>
+            <Router basename={REACT_APP_DEPLOY_FOLDER}>
+                <Route path={`/`} component={ Main } exact/>
 
-                <Route path="/pumping/" component={ Pumping }/>
+                <Route path={`/pumping`} component={ Pumping }/>
 
-                <Route path="/pumped/" component={ Pumped }/>
+                <Route path={`/pumped`} component={ Pumped }/>
             </Router>
         </div>
     )

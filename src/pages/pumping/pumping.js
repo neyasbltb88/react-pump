@@ -13,20 +13,25 @@ export default class Pumping extends Component {
     }
 
     openPumped() {
-        let name = randomName();
-        let pumped = window.open('/pumped', name, 'resizable');
+        const { REACT_APP_DEPLOY_FOLDER } = process.env;
+        const DEPLOY_FOLDER = REACT_APP_DEPLOY_FOLDER ? '/' + REACT_APP_DEPLOY_FOLDER : '';
 
-        this.setState(state => {
-            let { oldPumpeds } = state;
-            let newPumpeds = {
-                ...oldPumpeds,
-                [name]: pumped
-            }
+        setTimeout(() => {
+            let name = randomName();
+            let pumped = window.open(`${DEPLOY_FOLDER}/pumped`, name, 'resizable');
 
-            return {
-                pumpeds: newPumpeds
-            }
-        })
+            this.setState(state => {
+                let { oldPumpeds } = state;
+                let newPumpeds = {
+                    ...oldPumpeds,
+                    [name]: pumped
+                }
+
+                return {
+                    pumpeds: newPumpeds
+                }
+            });
+        }, 1000);
     }
 
     closeAllPumpeds = () => {
@@ -47,7 +52,6 @@ export default class Pumping extends Component {
 
         this.openPumped();
 
-        // window.onbeforeunload = () => this.closeAllPumpeds();
         window.addEventListener('beforeunload', this.closeAllPumpeds);
     }
 

@@ -17,6 +17,10 @@ code {
     monospace;
 }
 
+[title="Hosted on free web hosting 000webhost.com. Host your own website for FREE."] {
+    display: none;
+}
+
 #root {
     width: 100%;
     height: 100vh;
