@@ -7,9 +7,9 @@ import Pumped from '../../pages/pumped';
 
 import './app.css';
 
-function App() {
-    return ( 
-        <div className = "App" >
+const App = () => {
+    return (
+        <div className="App" >
             <Router>
                 <Route path="/" component={ Main } exact/>
 
@@ -18,7 +18,7 @@ function App() {
                 <Route path="/pumped/" component={ Pumped }/>
             </Router>
         </div>
-    );
+    )
 }
 
 export default App;
