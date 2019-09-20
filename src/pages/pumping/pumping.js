@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { randomName, workerHandler, positionWatcher } from '../../services'
+import { rand, randomName, workerHandler, positionWatcher } from '../../services'
 
 import Btn from '../../components/btn'
 
@@ -12,12 +12,17 @@ export default class Pumping extends Component {
     messageHandler = new workerHandler(this.worker, {
         'position:update': (data) => this.onPositionUpdate(data),
         'pumped:disconnected': (data) => this.onDisconnectedPumped(data),
+        'pumped:connected': () => {
+            window.focus();
+            this.messageHandler.message('checkStatus:pumpeds');
+        },
+        'status:pumpeds': (data) => this.autoOpenPumpeds(data),
     });
-
-    posWatcher = null;
 
     state = {
         lastTitle: '',
+        pumpedSize: 300,
+        autoOpen: true,
         Pumping: {}, // Положение насоса
         Pumpeds: new Map(), // Список шариков с их положениями
         Plugged: new Set(), // Коллекция подключенных шариков
@@ -110,26 +115,6 @@ export default class Pumping extends Component {
         this.collisionCalc(target, position);
     }
 
-    // Открывает новый шарик
-    openPumped = () => {
-        const { REACT_APP_DEPLOY_FOLDER } = process.env;
-        const DEPLOY_FOLDER = REACT_APP_DEPLOY_FOLDER ? '/' + REACT_APP_DEPLOY_FOLDER : '';
-
-        setTimeout(() => {
-            let name = randomName();
-            window.open(`${DEPLOY_FOLDER}/pumped`, name, 'resizable');
-        }, 100);
-    }
-
-    // Обрабатывает изменение положения насоса
-    onPosition(position) {
-        this.messageHandler.message('position:update', {target: 'Pumping', position});
-
-        this.setState({
-            Pumping: position
-        });
-    }
-
     // Обрабатывает закрытие окна насоса
     onClose = () => {
         this.closeAllPumpeds();
@@ -142,6 +127,56 @@ export default class Pumping extends Component {
         this.messageHandler.message('pumped:closeAll');
     }
 
+    // Открывает новый шарик
+    openPumped = (params) => {
+        const { REACT_APP_DEPLOY_FOLDER } = process.env;
+        const DEPLOY_FOLDER = REACT_APP_DEPLOY_FOLDER ? '/' + REACT_APP_DEPLOY_FOLDER : '';
+
+        let { pumpedSize } = this.state;
+        let screenWidth = window.screen.availWidth || window.screen.width;
+        let screenHeight = window.screen.availHeight || window.screen.height;
+
+        let w = screenWidth - pumpedSize;
+        let h = screenHeight - pumpedSize;
+
+        let winParams = params ? params : `resizable,width=${pumpedSize},height=${pumpedSize},left=${rand(0, w)},top=${rand(0, h)}`;
+
+        setTimeout(() => {
+            let name = randomName();
+            window.open(`${DEPLOY_FOLDER}/pumped`, name, winParams);
+        }, 0);
+    }
+
+    // Автоматически открывает 2 шарика слева и справа от насоса
+    autoOpenPumpeds(openedCnt) {
+        if(!this.state.autoOpen) return;
+
+        let { top, right, bottom, left } = this.state.Pumping;
+        let { pumpedSize } = this.state;
+
+        let pumpedParams = [
+            `resizable,width=${pumpedSize},height=${pumpedSize},left=${left - pumpedSize + 15},top=${top + (bottom / 2) - (pumpedSize / 2)}`,
+            `resizable,width=${pumpedSize},height=${pumpedSize},left=${right - 15},top=${top + (bottom / 2) - (pumpedSize / 2)}`
+        ];
+
+        if(pumpedParams[openedCnt]) {
+            this.openPumped(pumpedParams[openedCnt]);
+        } else {
+            this.setState({
+                autoOpen: false
+            });
+        }
+    }
+
+    // Обрабатывает изменение положения насоса
+    onPosition(position) {
+        this.messageHandler.message('position:update', {target: 'Pumping', position});
+
+        this.setState({
+            Pumping: position
+        });
+    }
+
     componentDidMount() {
         window.pumping_state = this.state;
 
@@ -152,12 +187,13 @@ export default class Pumping extends Component {
             lastTitle
         });
 
-        // this.openPumped();
-
         window.addEventListener('beforeunload', this.onClose);
         this.messageHandler.message('pumping:connected');
 
         this.posWatcher = new positionWatcher(pos => this.onPosition(pos));
+
+        // Запрос количества открытых шариков
+        this.messageHandler.message('checkStatus:pumpeds');
     }
 
     componentDidUpdate() {
@@ -166,7 +202,6 @@ export default class Pumping extends Component {
 
     componentWillUnmount() {
         document.title = this.state.lastTitle;
-
         this.posWatcher && this.posWatcher.stop();
     }
     
@@ -194,7 +229,7 @@ export default class Pumping extends Component {
                 <Btn onClick={this.closeAllPumpeds} label="Закрыть шарики"></Btn>
                 <br />
                 <br />
-                <Btn onClick={this.openPumped} label="Открыть шарик"></Btn>
+                <Btn onClick={() => this.openPumped()} label="Открыть шарик"></Btn>
             </div>
         )
     }

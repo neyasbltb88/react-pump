@@ -14,10 +14,6 @@ export default class positionWatcher {
         this.raf = null;
         this.autoUpdate = false;
 
-        // window.addEventListener('resize', this.handler);
-        // requestAnimationFrame(() => this.handler());
-        // window.requestAnimationFrame(this.handler);
-
         this.start();
     }
 

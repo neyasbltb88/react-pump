@@ -44,7 +44,18 @@ export default class Main extends Component {
     onClick = () => {
         const { REACT_APP_DEPLOY_FOLDER } = process.env;
         const DEPLOY_FOLDER = REACT_APP_DEPLOY_FOLDER ? '/' + REACT_APP_DEPLOY_FOLDER : '';
-        window.open(`${DEPLOY_FOLDER}/pumping`, randomName(), 'resizable');
+
+        let pumpingWidth = 300;
+        let pumpingHeight = 550;
+        let screenWidth = window.screen.availWidth || window.screen.width;
+        let screenHeight = window.screen.availHeight || window.screen.height;
+
+        let pumpingLeft = (screenWidth / 2 ) - (pumpingWidth / 2);
+        let pumpingTop = (screenHeight / 2 ) - (pumpingHeight / 2);
+
+        let pumpingParams = `resizable,width=${pumpingWidth},height=${pumpingHeight},left=${pumpingLeft},top=${pumpingTop},location=no,status=no,scrollbars=no,toolbar=no,menubar=no`;
+
+        window.open(`${DEPLOY_FOLDER}/pumping`, randomName(), pumpingParams);
 
         this.setState({
             opened: true
@@ -54,9 +65,11 @@ export default class Main extends Component {
 
     render() {
         const { opened } = this.state;
+        let label = opened ? 'Насос запущен' : 'Запустить насос';
+
         return (
             <div className="Main">
-                <Btn onClick={this.onClick} label="Запустить насос" disabled={opened}/>
+                <Btn onClick={this.onClick} label={ label } disabled={ opened }/>
             </div>
         )
     }
