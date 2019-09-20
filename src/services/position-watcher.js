@@ -3,7 +3,7 @@ import throttle from './throttle';
 export default class positionWatcher {
     constructor(callback = () => {}) {
         this.cb = callback;
-        this.handler = throttle(this.handler, 200);
+        this.handler = throttle(this.handler, 100);
         this.lastPosition = {
             top: null,
             right: null,

@@ -60,6 +60,7 @@ export default class Pumped extends Component{
         return (
             <div className="Pumped">
                 <div>Pumped: {window.name}</div>
+                <hr/>
                 {posiSpans}
             </div>
         )
