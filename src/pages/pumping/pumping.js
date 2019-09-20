@@ -24,20 +24,29 @@ export default class Pumping extends Component {
         pumpedSize: 300,
         autoOpen: true,
         lastPumpHeight: null,
+        connectedSide: {
+            left: false,
+            right: false
+        },
         Pumping: {}, // Положение насоса
         Pumpeds: new Map(), // Список шариков с их положениями
         Plugged: new Set(), // Коллекция подключенных шариков
     }
 
     // Подключает шарик к насосу
-    onPlug(name) {
+    onPlug(name, side) {
+        side = ( side === 'left' ) ? 'right' : 'left';
+        
         this.setState(state => {
             let Plugged = new Set([...state.Plugged]);
 
             // Если шарик еще не был подключен, подключаем и ведомляем
             if(!Plugged.has(name)) {
                 Plugged.add(name);
-                this.messageHandler.message('pumped:plugged', name);
+                this.messageHandler.message('pumped:plugged', {
+                    target: name,
+                    side
+                });
             } 
             
             return { Plugged };
@@ -63,6 +72,10 @@ export default class Pumping extends Component {
     collisionCalc(target, position) {
         let Pumping = null;
         let Pumpeds = new Map([...this.state.Pumpeds]);
+        let sides = {
+            left: false,
+            right: false
+        }
 
         // Если изменилось положение насоса
         if(target === 'Pumping') {
@@ -86,7 +99,12 @@ export default class Pumping extends Component {
             if(Pumping.left <= pumped.right && Pumping.right >= pumped.left) { horizontal = true; }
 
             if(vertical && horizontal) {
-                this.onPlug(name);
+                let pumpingCenter = ((Pumping.right - Pumping.left) / 2) + Pumping.left;
+                let pumpedCenter = ((pumped.right - pumped.left) / 2) + pumped.left;
+
+                let side = ( (pumpingCenter - pumpedCenter) > 0 ) ? 'left' : 'right';
+                sides[side] = true;
+                this.onPlug(name, side);
             } else {
                 this.onUnplug(name);
             }
@@ -94,6 +112,7 @@ export default class Pumping extends Component {
 
         // Сохраним изменения положений
         this.setState({
+            connectedSide: sides,
             Pumping,
             Pumpeds
         });
@@ -233,7 +252,7 @@ export default class Pumping extends Component {
 
         return (
             <div className="Pumping">
-                <div>Pumping</div>
+                <div className="header">Pumping</div>
                 <hr/>
 
                 <div className="row">

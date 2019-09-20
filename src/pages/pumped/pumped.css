@@ -1,3 +1,9 @@
 .Pumped {
     color: #fff;
 }
+
+
+.Pumped .header {
+    width: 100%;
+    text-align: center;
+}

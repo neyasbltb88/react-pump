@@ -14,8 +14,9 @@ export default class Pumped extends Component{
         'pumped:closeAll': () => {
             window.close();
         },
-        'pumped:plugged': (name) => {
-            if(window.name === name) this.onChangePlug(true);
+        'pumped:plugged': (data) => {
+            let { target, side } = data;
+            if(window.name === target) this.onChangePlug(true, side);
         },
         'pumped:unplugged': (name) => {
             if(window.name === name) this.onChangePlug(false);
@@ -29,6 +30,7 @@ export default class Pumped extends Component{
         lastTitle: '',
         position: {},
         plagged: false,
+        side: ''
     }
 
     onPumpDown(delta) {
@@ -40,9 +42,10 @@ export default class Pumped extends Component{
         window.moveBy(move, move);
     }
 
-    onChangePlug(value) {
+    onChangePlug(value, side = '') {
         this.setState({
-            plagged: value
+            plagged: value,
+            side
         });
     }
 
@@ -85,7 +88,7 @@ export default class Pumped extends Component{
 
         return (
             <div className="Pumped">
-                <div>Pumped: {window.name} { pluggedMark }</div>
+                <div className="header">Pumped: {window.name} { pluggedMark }</div>
                 <hr/>
                 {posiSpans}
             </div>
