@@ -26,6 +26,10 @@ code {
     height: 100vh;
 }
 
+.text-primary {
+    color: var(--primary);
+}
+
 .row {
     display: flex;
 }

@@ -10,39 +10,34 @@ export default class Main extends Component {
 
     messageHandler = new workerHandler(this.worker, {
         'pumping:connected': () => {
-            this.onPumpingOpen()
+            this.onChangePumpingConnected(true);
         },
         'pumping:disconnected': () => {
-            this.onPumpingClose()
+            this.onChangePumpingConnected(false);
+        },
+        'status:pumping': (data) => {
+            this.onChangePumpingConnected(data);
         }
     });
 
     state = {
         opened: false,
-        ready: false,
     };
 
     componentDidMount() {
         window.main_state = this.state;
         window.messageHandler = this.messageHandler;
+
+        this.messageHandler.message('checkStatus:pumping');
     }
 
     componentDidUpdate() {
         window.main_state = this.state;
     }
 
-    onPumpingOpen = () => {
-        // console.log('Насос открыт');
+    onChangePumpingConnected(value) {
         this.setState({
-            opened: true
-        });
-    }
-
-    onPumpingClose = () => {
-        // console.log('Насос закрыт');
-        this.setState({
-            opened: false,
-            ready: false
+            opened: value
         });
     }
 

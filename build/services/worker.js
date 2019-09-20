@@ -1,7 +1,6 @@
 let ports = new Set();
 let Pumping = null;
 let Pumpeds = new Map();
-let positions = new Map();
 
 class MessageHandler {
     constructor(handlers) {
@@ -23,9 +22,6 @@ class MessageHandler {
             let typeHandler = this.handlers[type];
             if(typeHandler) typeHandler(data, target);
 
-            // После получения каждого сообщения показывает количество активных портов
-            // this.messageToAll('ports', [...ports]);
-
         } catch(err) { this.messageToAll('worker:error', err); }
     }
 }
@@ -37,8 +33,11 @@ const messageHandler = new MessageHandler({
     },
     // data - undefined, target - порт воркера
     'pumping:disconnected': (data, target) => {
-        messageHandler.messageToAll('ports.delete', ports.delete(target));
+        ports.delete(target);
         Pumping = null;
+    },
+    'checkStatus:pumping': () => {
+        messageHandler.messageToAll('status:pumping', (Pumping !== null));
     },
     // data - имя окна, target - порт воркера
     'pumped:connected': (data, target) => {
@@ -49,10 +48,9 @@ const messageHandler = new MessageHandler({
     'pumped:disconnected': (data, target) => {
         ports.delete(target);
         Pumpeds.delete(data);
-        // messageHandler.messageToAll('ports.delete', ports.delete(target));
-        // messageHandler.messageToAll('Pumpeds.delete: ', Pumpeds.delete(data));
         messageHandler.messageToAll('Pumpeds: ', [...Pumpeds.keys()]);
-    }
+    },
+    
 });
 
 self.addEventListener('connect', e => {

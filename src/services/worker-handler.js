@@ -14,7 +14,10 @@ export default class workerHandler {
     handler = (e) => {
         try {
             let { type, data } = JSON.parse(e.data);
-            console.log(type, data);
+            if(type !== 'position:update') {
+                console.log(type, data);
+            }
+            
 
             let typeHandler = this.handlers[type];
             if(typeHandler) typeHandler(data);

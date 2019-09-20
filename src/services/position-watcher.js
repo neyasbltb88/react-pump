@@ -3,7 +3,7 @@ import throttle from './throttle';
 export default class positionWatcher {
     constructor(callback = () => {}) {
         this.cb = callback;
-        this.handler = throttle(this.handler, 100);
+        this.handler = throttle(this.handler, 50);
         this.lastPosition = {
             top: null,
             right: null,
@@ -42,8 +42,6 @@ export default class positionWatcher {
         };
 
         let compare = this.comparePosition(position);
-        // console.log('compare: ', compare);
-
         if(compare) {
             this.cb(position);
             this.lastPosition = position;
