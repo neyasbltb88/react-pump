@@ -30,19 +30,19 @@ export default class Pumping extends Component {
         },
         Pumping: {}, // Положение насоса
         Pumpeds: new Map(), // Список шариков с их положениями
-        Plugged: new Set(), // Коллекция подключенных шариков
+        Plugged: new Map(), // Коллекция подключенных шариков
     }
 
     // Подключает шарик к насосу
     onPlug(name, side) {
         side = ( side === 'left' ) ? 'right' : 'left';
-        
+
         this.setState(state => {
-            let Plugged = new Set([...state.Plugged]);
+            let Plugged = new Map([...state.Plugged]);
 
             // Если шарик еще не был подключен, подключаем и ведомляем
-            if(!Plugged.has(name)) {
-                Plugged.add(name);
+            if(!Plugged.has(name) || Plugged.get(name) !== side) {
+                Plugged.set(name, side);
                 this.messageHandler.message('pumped:plugged', {
                     target: name,
                     side
@@ -56,7 +56,7 @@ export default class Pumping extends Component {
     // Отключает шарик от насоса
     onUnplug(name) {
         this.setState(state => {
-            let Plugged = new Set([...state.Plugged]);
+            let Plugged = new Map([...state.Plugged]);
 
             // Если delete вернет true, значит шарик был подключен, 
             // а теперь отключился, значит уведомляем
@@ -245,14 +245,31 @@ export default class Pumping extends Component {
     }
     
     render() {
-        const { Pumping, Plugged } = this.state;
+        const { Pumping, Plugged, connectedSide } = this.state;
         let posiSpans = Object.keys(Pumping).map(pos => <div key={pos}>{ pos }: { Pumping[pos] }</div>);
-        let plugged = [...Plugged].map(plug => <div key={plug}>{ plug }</div>);
+        let plugged = [...Plugged.keys()].map(plug => <div key={plug}>{ plug }</div>);
         let pluggedCnt = Plugged.size ? <span className="text-primary">({ Plugged.size })</span> : null;
+
+        let sidesContent = {
+            'left': '<--',
+            'right': '-->'
+        };
+        // let sideConnect = (side !== '') ? <div className={`connect-${side} text-primary`}>{ sidesContent[side] }</div> : null;
+
+        let sideConnect = Object.keys(connectedSide).map(side => {
+            if(connectedSide[side]) {
+                return <div className={`connect-${side} text-primary`}>{ sidesContent[side] }</div>
+            }
+
+            return null;
+        });
 
         return (
             <div className="Pumping">
-                <div className="header">Pumping</div>
+                <div className="header">
+                    Pumping
+                    { sideConnect }
+                </div>
                 <hr/>
 
                 <div className="row">

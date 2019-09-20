@@ -6,3 +6,17 @@
     width: 100%;
     text-align: center;
 }
+
+.Pumping .connect-left,
+.Pumping .connect-right {
+    position: absolute;
+    top: 0;
+}
+
+.Pumping .connect-left {
+    left: 0;
+}
+
+.Pumping .connect-right {
+    right: 0;
+}

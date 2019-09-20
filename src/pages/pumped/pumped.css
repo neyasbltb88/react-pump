@@ -7,3 +7,17 @@
     width: 100%;
     text-align: center;
 }
+
+.Pumped .connect-left,
+.Pumped .connect-right {
+    position: absolute;
+    top: 0;
+}
+
+.Pumped .connect-left {
+    left: 0;
+}
+
+.Pumped .connect-right {
+    right: 0;
+}

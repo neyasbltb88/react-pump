@@ -82,13 +82,20 @@ export default class Pumped extends Component{
     }
 
     render() {
-        const { position, plagged } = this.state;
+        const { position, plagged, side } = this.state;
         let posiSpans = Object.keys(position).map(pos => <div key={pos}>{ pos }: { position[pos] }</div>);
         let pluggedMark = plagged ? <span className="text-primary">(Plugged)</span> : null;
+        let sidesContent = {
+            'left': '<-',
+            'right': '->'
+        };
+        let sideConnect = (side !== '') ? <div className={`connect-${side} text-primary`}>{ sidesContent[side] }</div> : null;
 
         return (
             <div className="Pumped">
-                <div className="header">Pumped: {window.name} { pluggedMark }</div>
+                <div className="header">Pumped: {window.name} { pluggedMark }
+                { sideConnect }
+                </div>
                 <hr/>
                 {posiSpans}
             </div>
