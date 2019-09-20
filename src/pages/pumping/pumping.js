@@ -28,6 +28,7 @@ export default class Pumping extends Component {
             left: false,
             right: false
         },
+        pumpRatio: 10,
         Pumping: {}, // Положение насоса
         Pumpeds: new Map(), // Список шариков с их положениями
         Plugged: new Map(), // Коллекция подключенных шариков
@@ -190,15 +191,19 @@ export default class Pumping extends Component {
 
     // Обработчик накачивания
     onPump(position) {
-        let { lastPumpHeight } = this.state;
+        let { lastPumpHeight, pumpRatio } = this.state;
         let height = position.bottom - position.top;
 
         // Проверка на null для того, чтобы не сработало само после старта
         if(lastPumpHeight !== null && lastPumpHeight !== height) {
             let msg = (lastPumpHeight < height) ? 'pump:up' : 'pump:down';
-            let pumpDelta = Math.abs(lastPumpHeight - height);
+            let delta = Math.abs(lastPumpHeight - height);
 
-            this.messageHandler.message(msg, pumpDelta);
+            // Оповещаем о накачивании, передаем величину накачки и коэффициент
+            this.messageHandler.message(msg, {
+                delta,
+                ratio: pumpRatio
+            });
         }
         
         return height;
@@ -258,7 +263,7 @@ export default class Pumping extends Component {
 
         let sideConnect = Object.keys(connectedSide).map(side => {
             if(connectedSide[side]) {
-                return <div className={`connect-${side} text-primary`}>{ sidesContent[side] }</div>
+                return <div key={side} className={`connect-${side} text-primary`}>{ sidesContent[side] }</div>
             }
 
             return null;

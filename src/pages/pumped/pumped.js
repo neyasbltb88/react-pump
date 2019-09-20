@@ -21,8 +21,8 @@ export default class Pumped extends Component{
         'pumped:unplugged': (name) => {
             if(window.name === name) this.onChangePlug(false);
         },
-        'pump:down': (delta) => {
-            if(this.state.plagged) this.onPumpDown(delta);
+        'pump:down': ({delta, ratio}) => {
+            if(this.state.plagged) this.onPumpDown(delta, ratio);
         }
     });
 
@@ -30,16 +30,62 @@ export default class Pumped extends Component{
         lastTitle: '',
         position: {},
         plagged: false,
-        side: ''
+        side: '',
+        delta: 0,
+        ratio: 1,
+        runResize: false,
     }
 
-    onPumpDown(delta) {
-        let ratio = 5;
-        let step = delta / ratio;
-        let move = -step / 2;
+    runResize = (need) => {
+        requestAnimationFrame(() => this.smoothResize(need));
+    }
+
+    smoothResize = (need) => {
+        let { delta, runResize } = this.state;
+        if(runResize && !need) return;
+
+        console.log('smoothResize');
         
+
+        let step = 2;
+        let move = -step / 2;
+
+        delta = delta - step;
+
         window.resizeBy(step, step);
-        window.moveBy(move, move);
+            window.moveBy(move, move);
+
+        if(delta > 0) {
+            runResize = true;
+            this.runResize(true);
+        } else {
+            delta = 0;
+            runResize = false;
+        }
+
+        this.setState({
+            delta,
+            runResize
+        });
+    }
+
+    // onPumpDown(delta, ratio = 1) {
+    //     let step = delta / ratio;
+    //     let move = -step / 2;
+        
+    //     window.resizeBy(step, step);
+    //     window.moveBy(move, move);
+    // }
+
+    onPumpDown(delta, ratio = 1) {        
+        this.setState(state => {
+            this.runResize();
+
+            return {
+                delta: state.delta + ( delta / ratio),
+                ratio,
+            }
+        })
     }
 
     onChangePlug(value, side = '') {
