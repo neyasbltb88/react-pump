@@ -26,12 +26,12 @@
     transition: transform 200ms ease;
 }
 
-.Btn:hover:not(:disabled) {
+.Btn:not(:disabled):hover {
     cursor: pointer;
     box-shadow: 0 0 20px -10px var(--primary);
 }
 
-.Btn:hover:after:not(:disabled) {
+.Btn:not(:disabled):hover:after{
     transform: translate3d(0, 0, 1px);
 }
 

@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react';
-import { randomName } from '../../services'
+import React, { Component } from 'react';
+import { randomName, workerHandler, positionWatcher } from '../../services'
 
 import Btn from '../../components/btn'
 
@@ -7,39 +7,53 @@ import './pumping.css';
 
 export default class Pumping extends Component {
 
+    worker = new SharedWorker('./services/worker.js');
+
+    messageHandler = new workerHandler(this.worker, {
+        'position:update': (data) => {
+            let { target, position } = data;
+
+            if(target !== 'Pumping') {
+                let Pumpeds = this.state.Pumpeds;
+                this.setState({
+                    Pumpeds,
+                    target: position
+                })
+            }
+        }
+    });
+
     state = {
         lastTitle: '',
-        pumpeds: {}
+        Pumping: {},
+        Pumpeds: {}
     }
 
-    openPumped() {
+    openPumped = () => {
         const { REACT_APP_DEPLOY_FOLDER } = process.env;
         const DEPLOY_FOLDER = REACT_APP_DEPLOY_FOLDER ? '/' + REACT_APP_DEPLOY_FOLDER : '';
 
         setTimeout(() => {
             let name = randomName();
-            let pumped = window.open(`${DEPLOY_FOLDER}/pumped`, name, 'resizable');
+            window.open(`${DEPLOY_FOLDER}/pumped`, name, 'resizable');
+        }, 100);
+    }
 
-            this.setState(state => {
-                let { oldPumpeds } = state;
-                let newPumpeds = {
-                    ...oldPumpeds,
-                    [name]: pumped
-                }
+    onPosition(position) {
+        this.messageHandler.message('position:update', {target: 'Pumping', position});
+        this.setState({
+            Pumping: position
+        });
+    }
 
-                return {
-                    pumpeds: newPumpeds
-                }
-            });
-        }, 1000);
+    onClose = () => {
+        this.closeAllPumpeds();
+
+        this.messageHandler.message('pumping:disconnected');
     }
 
     closeAllPumpeds = () => {
-        const { pumpeds } = this.state;
-        
-        for (const pumped in pumpeds) {
-            pumpeds[pumped].close();
-        }
+        this.messageHandler.message('pumped:closeAll');
     }
 
     componentDidMount() {
@@ -52,7 +66,10 @@ export default class Pumping extends Component {
 
         this.openPumped();
 
-        window.addEventListener('beforeunload', this.closeAllPumpeds);
+        window.addEventListener('beforeunload', this.onClose);
+        this.messageHandler.message('pumping:connected');
+
+        new positionWatcher(pos => this.onPosition(pos));
     }
 
     componentWillUnmount() {
@@ -60,11 +77,19 @@ export default class Pumping extends Component {
     }
     
     render() {
+        const { Pumping } = this.state;
+        let posiSpans = Object.keys(Pumping).map(pos => <div key={pos}>{ pos }: { Pumping[pos] }</div>)
+
         return (
-            <Fragment>
+            <div className="Pumping">
                 <div>Pumping</div>
+                {posiSpans}
+                <br />
                 <Btn onClick={this.closeAllPumpeds} label="Закрыть шарики"></Btn>
-            </Fragment>
+                <br />
+                <br />
+                <Btn onClick={this.openPumped} label="Открыть шарик"></Btn>
+            </div>
         )
     }
 }
