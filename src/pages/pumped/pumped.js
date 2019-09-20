@@ -8,17 +8,20 @@ export default class Pumped extends Component{
     worker = new SharedWorker('./services/worker.js');
 
     messageHandler = new workerHandler(this.worker, {
-        'pumped:close': (data) => {
-            if(window.name === data) window.close();
+        'pumped:close': (name) => {
+            if(window.name === name) window.close();
         },
         'pumped:closeAll': () => {
             window.close();
         },
-        'pumped:plugged': (data) => {
-            if(window.name === data) this.onChangePlug(true);
+        'pumped:plugged': (name) => {
+            if(window.name === name) this.onChangePlug(true);
         },
-        'pumped:unplugged': (data) => {
-            if(window.name === data) this.onChangePlug(false);
+        'pumped:unplugged': (name) => {
+            if(window.name === name) this.onChangePlug(false);
+        },
+        'pump:down': (delta) => {
+            if(this.state.plagged) this.onPumpDown(delta);
         }
     });
 
@@ -26,6 +29,15 @@ export default class Pumped extends Component{
         lastTitle: '',
         position: {},
         plagged: false,
+    }
+
+    onPumpDown(delta) {
+        let ratio = 5;
+        let step = delta / ratio;
+        let move = -step / 2;
+        
+        window.resizeBy(step, step);
+        window.moveBy(move, move);
     }
 
     onChangePlug(value) {

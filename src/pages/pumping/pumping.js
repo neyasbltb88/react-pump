@@ -23,6 +23,7 @@ export default class Pumping extends Component {
         lastTitle: '',
         pumpedSize: 300,
         autoOpen: true,
+        lastPumpHeight: null,
         Pumping: {}, // Положение насоса
         Pumpeds: new Map(), // Список шариков с их положениями
         Plugged: new Set(), // Коллекция подключенных шариков
@@ -168,11 +169,30 @@ export default class Pumping extends Component {
         }
     }
 
+    // Обработчик накачивания
+    onPump(position) {
+        let { lastPumpHeight } = this.state;
+        let height = position.bottom - position.top;
+
+        // Проверка на null для того, чтобы не сработало само после старта
+        if(lastPumpHeight !== null && lastPumpHeight !== height) {
+            let msg = (lastPumpHeight < height) ? 'pump:up' : 'pump:down';
+            let pumpDelta = Math.abs(lastPumpHeight - height);
+
+            this.messageHandler.message(msg, pumpDelta);
+        }
+        
+        return height;
+    }
+
     // Обрабатывает изменение положения насоса
     onPosition(position) {
         this.messageHandler.message('position:update', {target: 'Pumping', position});
 
+        let lastPumpHeight = this.onPump(position);
+
         this.setState({
+            lastPumpHeight,
             Pumping: position
         });
     }

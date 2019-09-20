@@ -36,6 +36,7 @@ const messageHandler = new MessageHandler({
         ports.delete(target);
         Pumping = null;
     },
+    // Команда, отвечающая, запущен ли насос
     'checkStatus:pumping': () => {
         messageHandler.messageToAll('status:pumping', (Pumping !== null));
     },
@@ -50,10 +51,15 @@ const messageHandler = new MessageHandler({
         Pumpeds.delete(data);
         messageHandler.messageToAll('Pumpeds: ', [...Pumpeds.keys()]);
     },
+    // Команда, отвечающая количеством запущенных шариков
+    'checkStatus:pumpeds': () => {
+        messageHandler.messageToAll('status:pumpeds', Pumpeds.size);
+    }
     
 });
 
-self.addEventListener('connect', e => {
+
+this.addEventListener('connect', e => {
     ports.add(e.source);
     e.source.addEventListener('message', messageHandler.handler);
     e.source.start();
