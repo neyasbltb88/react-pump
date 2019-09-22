@@ -53,7 +53,7 @@ export default class Pumped extends Component{
         delta = delta - step;
 
         window.resizeBy(step, step);
-            window.moveBy(move, move);
+        window.moveBy(move, move);
 
         if(delta > 0) {
             runResize = true;

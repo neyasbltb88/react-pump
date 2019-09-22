@@ -12,6 +12,8 @@
 .btn-section {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 15px;
 }
 
 .pump {
@@ -21,22 +23,6 @@
     flex-direction: column;
     text-align: center;
     font-size: 0;
-}
-
-.pump-handle {
-    padding-top: 15px;
-    height: 24px;
-    position: relative;
-}
-
-.pump-handle-svg {
-    max-width: 240px;
-    height: 24px;
-    position: absolute;
-    top: 15px;
-    left: 50%;
-    transform: translate(-50%);
-    /* cursor: grab; */
 }
 
 .pump-plunger {

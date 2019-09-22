@@ -1,0 +1,14 @@
+.PumpHandle {
+    height: 24px;
+    position: relative;
+}
+
+.pump-handle-svg {
+    max-width: 240px;
+    height: 24px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%);
+    cursor: grab;
+}

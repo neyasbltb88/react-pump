@@ -20,11 +20,17 @@ export default class positionWatcher {
     comparePosition(position) {
         let diff = false;
 
-        for(let pos in position) {
+        // for(let pos in position) {
+        //     if(position[pos] !== this.lastPosition[pos]) {
+        //         diff = true;
+        //     }
+        // }
+
+        Object.keys(position).forEach(pos => {
             if(position[pos] !== this.lastPosition[pos]) {
                 diff = true;
             }
-        }
+        });
 
         return diff;
     }

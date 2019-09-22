@@ -1,24 +1,16 @@
-import React, { Component, createRef } from 'react';
+import React from 'react';
 import './btn.css';
 
-export default class Btn extends Component {
-    constructor(props) {
-        super(props);
-        this.btn = React.createRef();
+const Btn = (props) => {
+    const { onClick, label, disabled, dense, children, color } = props;
+    let content = children ? children : label;
+    let title = (children && label) ? label : '';
+    let className = `${dense ? 'Btn-dense' : 'Btn'}`;
+    let style = {
+        '--primary': color
     }
 
-    componentDidMount() {
-        if(this.props.color) {
-            this.btn.current.style.setProperty('--primary', this.props.color);
-        }
-    }
-    
-    render() {
-        const { onClick, label, disabled, dense, children } = this.props;
-        let content = children ? children : label;
-        let title = (children && label) ? label : '';
-
-        return <button ref={this.btn} className={`${dense ? 'Btn-dense' : 'Btn'}`} onClick={onClick} disabled={disabled} title={title}>{content}</button>
-    }
-    
+    return <button style={color ? style : {}} className={className} onClick={onClick} disabled={disabled} title={title}>{content}</button>
 }
+
+export default Btn;

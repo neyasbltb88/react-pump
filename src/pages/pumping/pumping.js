@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { rand, randomName, workerHandler, positionWatcher } from '../../services'
 
-import Btn from '../../components/btn'
+import Btn from '../../components/btn';
+import PumpHandle from '../../components/pump-handle';
 
 import './pumping.css';
 
@@ -225,6 +226,12 @@ export default class Pumping extends Component {
         });
     }
 
+    // Изменяет высоту окна по команде перетаскивания ручки насоса
+    handleResize = (delta) => {
+        window.resizeBy(0, delta);
+        window.moveBy(0, -delta);
+    }
+
     componentDidMount() {
         window.pumping_state = this.state;
 
@@ -257,29 +264,27 @@ export default class Pumping extends Component {
         let { connectedSide } = this.state;
         let connecters = Object.keys(connectedSide).map(side => {
             return connectedSide[side] ? 
-                <img key={side} src={`../img/pump-tube-${side}.svg`} alt={`pump-tube-${side}`} className={`pump-tube pump-tube-${side}-svg`} draggable="false"/> : null;
+                <img key={side} src={`./img/pump-tube-${side}.svg`} alt={`pump-tube-${side}`} className={`pump-tube pump-tube-${side}-svg`} draggable="false"/> : null;
         });
 
         return (
             <div className="Pumping">
                 <div className="btn-section">
                     <Btn onClick={() => this.openPumped()} label="Добавить шарик" dense>
-                        <img src="../img/balloon-plus.svg" alt="balloon-plus" className="balloon-plus-svg" draggable="false" height="20"/>
+                        <img src="./img/balloon-plus.svg" alt="balloon-plus" className="balloon-plus-svg" draggable="false" height="20"/>
                     </Btn>
                     <Btn onClick={() => this.closeAllPumpeds()} label="Убрать все шарики" color="#e91e63" dense>
-                        <img src="../img/balloon-close.svg" alt="balloon-close" className="balloon-close-svg" draggable="false" height="20"/>
+                        <img src="./img/balloon-close.svg" alt="balloon-close" className="balloon-close-svg" draggable="false" height="20"/>
                     </Btn>
                 </div>
 
                 <div className="pump">
-                    <div className="pump-handle">
-                        <img src="../img/pump-handle.svg" alt="pump-handle" className="pump-handle-svg" draggable="false"/>
-                    </div>
+                    <PumpHandle handleResize={this.handleResize}/>
                     <div className="pump-plunger">
-                        <img src="../img/pump-plunger.svg" alt="pump-plunger" className="pump-plunger-svg" draggable="false"/>
+                        <img src="./img/pump-plunger.svg" alt="pump-plunger" className="pump-plunger-svg" draggable="false"/>
                     </div>
                     <div className="pump-body">
-                        <img src="../img/pump-body.svg" alt="pump-body" className="pump-body-svg" draggable="false"/>
+                        <img src="./img/pump-body.svg" alt="pump-body" className="pump-body-svg" draggable="false"/>
                         {connecters}
                     </div>
                 </div>
