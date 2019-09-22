@@ -122,12 +122,16 @@ export default class Pumping extends Component {
     // Обрабатывает дисконнект шарика
     onDisconnectedPumped(data) {
         let Pumpeds = new Map([...this.state.Pumpeds]);
+        let { Pumping } = this.state;
+
         Pumpeds.delete(data);
-        this.onUnplug(data);
 
         this.setState({
             Pumpeds
         });
+
+        this.onUnplug(data);
+        this.collisionCalc('Pumping', Pumping);
     }
 
     // Обрабатывает изменение размеров/позиций насоса и шариков
@@ -250,47 +254,35 @@ export default class Pumping extends Component {
     }
     
     render() {
-        const { Pumping, Plugged, connectedSide } = this.state;
-        let posiSpans = Object.keys(Pumping).map(pos => <div key={pos}>{ pos }: { Pumping[pos] }</div>);
-        let plugged = [...Plugged.keys()].map(plug => <div key={plug}>{ plug }</div>);
-        let pluggedCnt = Plugged.size ? <span className="text-primary">({ Plugged.size })</span> : null;
-
-        let sidesContent = {
-            'left': '<--',
-            'right': '-->'
-        };
-        // let sideConnect = (side !== '') ? <div className={`connect-${side} text-primary`}>{ sidesContent[side] }</div> : null;
-
-        let sideConnect = Object.keys(connectedSide).map(side => {
-            if(connectedSide[side]) {
-                return <div key={side} className={`connect-${side} text-primary`}>{ sidesContent[side] }</div>
-            }
-
-            return null;
+        let { connectedSide } = this.state;
+        let connecters = Object.keys(connectedSide).map(side => {
+            return connectedSide[side] ? 
+                <img key={side} src={`../img/pump-tube-${side}.svg`} alt={`pump-tube-${side}`} className={`pump-tube pump-tube-${side}-svg`} draggable="false"/> : null;
         });
 
         return (
             <div className="Pumping">
-                <div className="header">
-                    Pumping
-                    { sideConnect }
+                <div className="btn-section">
+                    <Btn onClick={() => this.openPumped()} label="Добавить шарик" dense>
+                        <img src="../img/balloon-plus.svg" alt="balloon-plus" className="balloon-plus-svg" draggable="false" height="20"/>
+                    </Btn>
+                    <Btn onClick={() => this.closeAllPumpeds()} label="Убрать все шарики" color="#e91e63" dense>
+                        <img src="../img/balloon-close.svg" alt="balloon-close" className="balloon-close-svg" draggable="false" height="20"/>
+                    </Btn>
                 </div>
-                <hr/>
 
-                <div className="row">
-                    <div className="col">{posiSpans}</div>
-                    <div className="col">
-                        Plugged { pluggedCnt }
-                        <hr/>
-                        { plugged }
+                <div className="pump">
+                    <div className="pump-handle">
+                        <img src="../img/pump-handle.svg" alt="pump-handle" className="pump-handle-svg" draggable="false"/>
+                    </div>
+                    <div className="pump-plunger">
+                        <img src="../img/pump-plunger.svg" alt="pump-plunger" className="pump-plunger-svg" draggable="false"/>
+                    </div>
+                    <div className="pump-body">
+                        <img src="../img/pump-body.svg" alt="pump-body" className="pump-body-svg" draggable="false"/>
+                        {connecters}
                     </div>
                 </div>
-
-                <br />
-                <Btn onClick={this.closeAllPumpeds} label="Закрыть шарики"></Btn>
-                <br />
-                <br />
-                <Btn onClick={() => this.openPumped()} label="Открыть шарик"></Btn>
             </div>
         )
     }

@@ -69,7 +69,7 @@ export default class Main extends Component {
 
         return (
             <div className="Main">
-                <Btn onClick={this.onClick} label={ label } disabled={ opened }/>
+                <Btn onClick={this.onClick} label={ label } disabled={ opened } />
             </div>
         )
     }

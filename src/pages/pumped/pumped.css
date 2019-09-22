@@ -1,23 +1,12 @@
 .Pumped {
     color: #fff;
-}
-
-
-.Pumped .header {
-    width: 100%;
+    width: 100vw;
+    height: 100vh;
     text-align: center;
+    overflow: hidden;
 }
 
-.Pumped .connect-left,
-.Pumped .connect-right {
-    position: absolute;
-    top: 0;
-}
-
-.Pumped .connect-left {
-    left: 0;
-}
-
-.Pumped .connect-right {
-    right: 0;
+.baloon {
+    height: 100%;
+    width: 100%;
 }

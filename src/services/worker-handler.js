@@ -15,7 +15,7 @@ export default class workerHandler {
         try {
             let { type, data } = JSON.parse(e.data);
             if(type !== 'position:update') {
-                // console.log(type, data);
+                console.log(type, data);
             }
             
 

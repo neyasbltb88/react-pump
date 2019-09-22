@@ -1,4 +1,4 @@
-.Btn {
+[class*=Btn] {
     background-color: transparent;
     color: var(--primary);
     border: 2px solid var(--primary);
@@ -12,7 +12,12 @@
     overflow: hidden;
 }
 
-.Btn:after {
+[class*=Btn-dense] {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.7rem;
+}
+
+[class*=Btn]:after {
     content: '';
     position: absolute;
     width: 100%;
@@ -26,15 +31,15 @@
     transition: transform 200ms ease;
 }
 
-.Btn:not(:disabled):hover {
+[class*=Btn]:not(:disabled):hover {
     cursor: pointer;
     box-shadow: 0 0 20px -10px var(--primary);
 }
 
-.Btn:not(:disabled):hover:after{
+[class*=Btn]:not(:disabled):hover:after{
     transform: translate3d(0, 0, 1px);
 }
 
-.Btn:disabled {
+[class*=Btn]:disabled {
     opacity: .5;
 }

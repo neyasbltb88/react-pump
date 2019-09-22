@@ -69,14 +69,6 @@ export default class Pumped extends Component{
         });
     }
 
-    // onPumpDown(delta, ratio = 1) {
-    //     let step = delta / ratio;
-    //     let move = -step / 2;
-        
-    //     window.resizeBy(step, step);
-    //     window.moveBy(move, move);
-    // }
-
     onPumpDown(delta, ratio = 1) {        
         this.setState(state => {
             this.runResize();
@@ -128,22 +120,14 @@ export default class Pumped extends Component{
     }
 
     render() {
-        const { position, plagged, side } = this.state;
-        let posiSpans = Object.keys(position).map(pos => <div key={pos}>{ pos }: { position[pos] }</div>);
-        let pluggedMark = plagged ? <span className="text-primary">(Plugged)</span> : null;
-        let sidesContent = {
-            'left': '<-',
-            'right': '->'
-        };
-        let sideConnect = (side !== '') ? <div className={`connect-${side} text-primary`}>{ sidesContent[side] }</div> : null;
+        const { plagged } = this.state;
+        let color = plagged ? '#e91e63' : '#576d7e';
 
         return (
             <div className="Pumped">
-                <div className="header">Pumped: {window.name} { pluggedMark }
-                { sideConnect }
-                </div>
-                <hr/>
-                {posiSpans}
+                <svg className="baloon" xmlns="http://www.w3.org/2000/svg" width="223" height="300" viewBox="0 0 222 300" version="1.1">
+                    <path fill={color} transform="matrix(0.02344759,0,0,-0.02344759,-0.03472868,300.11723)" d="M 4430,12789 C 3509,12730 2661,12419 1950,11881 883,11074 192,9797 36,8345 -33,7704 2,6967 136,6240 328,5201 760,4156 1358,3285 1894,2504 2583,1846 3277,1451 c 140,-79 424,-214 558,-264 215,-80 439,-136 648,-162 60,-7 111,-16 115,-19 8,-9 -15,-237 -34,-326 -35,-167 -134,-411 -198,-487 -33,-40 -33,-73 2,-105 59,-57 173,-82 372,-83 213,0 331,25 393,83 36,34 34,62 -7,116 -114,150 -225,522 -226,758 0,54 -15,47 150,68 889,116 1919,814 2751,1865 480,607 892,1332 1182,2085 466,1210 624,2521 441,3659 -214,1337 -881,2491 -1874,3242 -876,663 -1971,982 -3120,908 z"/>
+                </svg>
             </div>
         )
     }
