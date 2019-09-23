@@ -1,3 +1,3 @@
 # React Pump
 
-**[DEMO](https://neyasbltb88.github.io/react-pump)**
+**[DEMO](http://fess88.ru/react-pump/)**
