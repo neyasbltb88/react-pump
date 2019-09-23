@@ -1,99 +1,29 @@
 import React, { Component } from 'react';
-import { workerHandler, positionWatcher } from '../../services'
 
 import './pumped.css';
 
 export default class Pumped extends Component{
 
-    worker = new SharedWorker('./services/worker.js');
-
-    messageHandler = new workerHandler(this.worker, {
-        'pumped:close': (name) => {
-            if(window.name === name) window.close();
-        },
-        'pumped:closeAll': () => {
-            window.close();
-        },
-        'pumped:plugged': (data) => {
-            let { target, side } = data;
-            if(window.name === target) this.onChangePlug(true, side);
-        },
-        'pumped:unplugged': (name) => {
-            if(window.name === name) this.onChangePlug(false);
-        },
-        'pump:down': ({delta, ratio}) => {
-            if(this.state.plagged) this.onPumpDown(delta, ratio);
-        }
+    messageHandler = this.props.messageHandler({
+        'pumped:close': (name) => (window.name === name) && window.close(),
+        'pumped:closeAll': () => window.close(),
+        'pumped:plugged': (data) => (window.name === data.target) && this.onChangePlug(true, data.side),
+        'pumped:unplugged': (name) => (window.name === name) && this.onChangePlug(false),
+        'status:pumped': (data) => (window.name === data.target && data.plugged) && this.onChangePlug(true, data.side),
     });
 
     state = {
         lastTitle: '',
-        position: {},
         plagged: false,
         side: '',
-        delta: 0,
-        ratio: 1,
-        runResize: false,
     }
 
-    runResize = (need) => {
-        requestAnimationFrame(() => this.smoothResize(need));
-    }
-
-    smoothResize = (need) => {
-        let { delta, runResize } = this.state;
-        if(runResize && !need) return;
-
-        console.log('smoothResize');
-        
-
-        let step = 2;
-        let move = -step / 2;
-
-        delta = delta - step;
-
-        window.resizeBy(step, step);
-        window.moveBy(move, move);
-
-        if(delta > 0) {
-            runResize = true;
-            this.runResize(true);
-        } else {
-            delta = 0;
-            runResize = false;
-        }
-
-        this.setState({
-            delta,
-            runResize
-        });
-    }
-
-    onPumpDown(delta, ratio = 1) {        
-        this.setState(state => {
-            this.runResize();
-
-            return {
-                delta: state.delta + ( delta / ratio),
-                ratio,
-            }
-        })
-    }
-
+    // Обработчик подключения/отключения шарика от насоса
     onChangePlug(value, side = '') {
-        this.setState({
-            plagged: value,
-            side
-        });
+        this.setState({ plagged: value, side });
     }
 
-    onPosition(position) {
-        this.messageHandler.message('position:update', {target: window.name, position});
-        this.setState({
-            position
-        })
-    }
-
+    // Обработчик закрытия шарика
     onClose = () => {
         this.messageHandler.message('pumped:disconnected', window.name);
     }
@@ -103,20 +33,16 @@ export default class Pumped extends Component{
         document.title = 'Шарик';
 
         window.addEventListener('beforeunload', this.onClose);
-
+        // Сообщаем о появлении нового шарика
         this.messageHandler.message('pumped:connected', window.name);
+        // Запрашиваем статус подключения шарика к насосу
+        this.messageHandler.message('checkStatus:pumped', window.name);
 
-        this.posWatcher = new positionWatcher(pos => this.onPosition(pos));
-
-        this.setState({
-            lastTitle
-        });
+        this.setState({ lastTitle });
     }
 
     componentWillUnmount() {
         document.title = this.state.lastTitle;
-
-        this.posWatcher && this.posWatcher.stop();
     }
 
     render() {

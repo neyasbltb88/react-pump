@@ -7,9 +7,9 @@ class MessageHandler {
         this.handlers = handlers;
     }
 
-    messageToAll = (type, data, target) => {
+    messageToAll = (type, data) => {
         ports.forEach(port => {        
-            port.postMessage(JSON.stringify({ type, data, target }));
+            port.postMessage(JSON.stringify({ type, data }));
         });
     }
 

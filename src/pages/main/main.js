@@ -1,23 +1,16 @@
 import React, { Component } from 'react';
-import { randomName, workerHandler } from '../../services'
-import './main.css';
+import { buildWindowParams } from '../../services';
 
 import Btn from '../../components/btn';
 
+import './main.css';
+
 export default class Main extends Component {
 
-    worker = new SharedWorker('./services/worker.js');
-
-    messageHandler = new workerHandler(this.worker, {
-        'pumping:connected': () => {
-            this.onChangePumpingConnected(true);
-        },
-        'pumping:disconnected': () => {
-            this.onChangePumpingConnected(false);
-        },
-        'status:pumping': (data) => {
-            this.onChangePumpingConnected(data);
-        }
+    messageHandler = this.props.messageHandler({
+        'pumping:connected': () => this.onChangePumpingConnected(true),
+        'pumping:disconnected': () => this.onChangePumpingConnected(false),
+        'status:pumping': (data) => this.onChangePumpingConnected(data)
     });
 
     state = {
@@ -25,20 +18,11 @@ export default class Main extends Component {
     };
 
     componentDidMount() {
-        window.main_state = this.state;
-        window.messageHandler = this.messageHandler;
-
         this.messageHandler.message('checkStatus:pumping');
     }
 
-    componentDidUpdate() {
-        window.main_state = this.state;
-    }
-
     onChangePumpingConnected(value) {
-        this.setState({
-            opened: value
-        });
+        this.setState({ opened: value });
     }
 
     onClick = () => {
@@ -47,29 +31,24 @@ export default class Main extends Component {
 
         let pumpingWidth = 300;
         let pumpingHeight = 550;
-        let screenWidth = window.screen.availWidth || window.screen.width;
-        let screenHeight = window.screen.availHeight || window.screen.height;
+        let pumpingParams = buildWindowParams({
+                                width: pumpingWidth,
+                                height: pumpingHeight,
+                                left: ((window.screen.availWidth || window.screen.width) / 2 ) - (pumpingWidth / 2),
+                                top: ((window.screen.availHeight || window.screen.height) / 2 ) - (pumpingHeight / 2),
+                            });
 
-        let pumpingLeft = (screenWidth / 2 ) - (pumpingWidth / 2);
-        let pumpingTop = (screenHeight / 2 ) - (pumpingHeight / 2);
-
-        let pumpingParams = `resizable,width=${pumpingWidth},height=${pumpingHeight},left=${pumpingLeft},top=${pumpingTop},location=no,status=no,scrollbars=no,toolbar=no,menubar=no`;
-
-        window.open(`${DEPLOY_FOLDER}/pumping`, randomName(), pumpingParams);
-
-        this.setState({
-            opened: true
-        });
+        window.open(`${DEPLOY_FOLDER}/pumping`, 'Pumping', pumpingParams);
+        this.setState({ opened: true });
     }
 
-
     render() {
-        const { opened } = this.state;
-        let label = opened ? 'Насос запущен' : 'Запустить насос';
+        const { open } = this.state
+        let label = open ? 'Насос запущен' : 'Запустить насос';
 
         return (
             <div className="Main">
-                <Btn onClick={this.onClick} label={ label } disabled={ opened } />
+                <Btn onClick={this.onClick} label={label} disabled={open} />
             </div>
         )
     }

@@ -18,21 +18,7 @@ export default class positionWatcher {
     }
 
     comparePosition(position) {
-        let diff = false;
-
-        // for(let pos in position) {
-        //     if(position[pos] !== this.lastPosition[pos]) {
-        //         diff = true;
-        //     }
-        // }
-
-        Object.keys(position).forEach(pos => {
-            if(position[pos] !== this.lastPosition[pos]) {
-                diff = true;
-            }
-        });
-
-        return diff;
+        return Object.keys(position).some(pos => position[pos] !== this.lastPosition[pos]);
     }
 
     handler = () => {
@@ -43,8 +29,7 @@ export default class positionWatcher {
             left: window.screenX
         };
 
-        let compare = this.comparePosition(position);
-        if(compare) {
+        if(this.comparePosition(position)) {
             this.cb(position);
             this.lastPosition = position;
         }

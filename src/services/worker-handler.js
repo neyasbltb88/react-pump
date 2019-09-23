@@ -15,13 +15,19 @@ export default class workerHandler {
         try {
             let { type, data } = JSON.parse(e.data);
             if(type !== 'position:update') {
-                console.log(type, data);
+                // console.log(type, data);
             }
-            
+
+            if(type === 'worker:error') {
+                console.log('%c%s', 'color: #272822;background-color: #F92672;padding: 2px 10px;', type, data);
+                alert(`${type} - ${data}`);
+            }
 
             let typeHandler = this.handlers[type];
-            if(typeHandler) typeHandler(data);
-
+            if(typeHandler) {
+                // console.log(type, data);
+                typeHandler(data);
+            }
         } catch(err) { console.log(err) }
     }
 }

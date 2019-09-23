@@ -1,3 +1,4 @@
 import Main from './main';
+import { withMessageHandler } from '../../hocs';
 
-export default Main;
+export default withMessageHandler(Main);
