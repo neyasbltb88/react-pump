@@ -43,12 +43,12 @@ export default class Main extends Component {
     }
 
     render() {
-        const { open } = this.state
-        let label = open ? 'Насос запущен' : 'Запустить насос';
+        const { opened } = this.state
+        let label = opened ? 'Насос запущен' : 'Запустить насос';
 
         return (
             <div className="Main">
-                <Btn onClick={this.onClick} label={label} disabled={open} />
+                <Btn onClick={this.onClick} label={label} disabled={opened} />
             </div>
         )
     }

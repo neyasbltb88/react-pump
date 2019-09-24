@@ -11,6 +11,8 @@
 # production
 # /build
 
+/deploy_auth.js
+
 # misc
 .DS_Store
 .env.local
